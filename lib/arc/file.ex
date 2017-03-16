@@ -97,6 +97,12 @@ end
   defp request(remote_path, options, tries \\ 0) do
     case HTTPoison.get(remote_path, [], options) do
       {:ok, %{status_code: 200, body: body}} -> {:ok, body}
+      {:ok, %{status_code: 302, headers: headers}} ->
+        location = headers
+        |> Enum.into(%{})
+        |> Map.get("Location")
+        |> request(options)
+
       {:error, %{reason: :timeout}} ->
         case retry(tries, options) do
           {:ok, :retry} -> request(remote_path, options, tries + 1)
