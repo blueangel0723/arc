@@ -83,7 +83,7 @@ end
   # :backoff_factor - a backoff factor to apply between attempts, in milliseconds
   defp get_remote_path(remote_path) do
     options = [
-      follow_redirect: true,
+      follow_redirect: false,
       recv_timeout: Application.get_env(:arc, :recv_timeout, 5_000),
       connect_timeout: Application.get_env(:arc, :connect_timeout, 10_000),
       timeout: Application.get_env(:arc, :timeout, 10_000),
@@ -98,7 +98,7 @@ end
     case HTTPoison.get(remote_path, [], options) do
       {:ok, %{status_code: 200, body: body}} -> {:ok, body}
       {:ok, %{status_code: 302, headers: headers}} ->
-        location = headers
+        headers
         |> Enum.into(%{})
         |> Map.get("Location")
         |> request(options)
