@@ -14,7 +14,7 @@ Add the latest stable release to your `mix.exs` file, along with the required de
 ```elixir
 defp deps do
   [
-    arc: "~> 0.7.0",
+    arc: "~> 0.8.0",
 
     # If using Amazon S3:
     ex_aws: "~> 1.1",
@@ -49,7 +49,7 @@ Arc expects certain properties to be configured at the application level:
 ```elixir
 config :arc,
   storage: Arc.Storage.S3, # or Arc.Storage.Local
-  bucket: {:system, "AWS_S3_BUCKET"}, # if using Amazon S3
+  bucket: {:system, "AWS_S3_BUCKET"} # if using Amazon S3
 ```
 
 Along with any configuration necessary for ExAws.
@@ -393,7 +393,8 @@ Examples:
 ```elixir
 # To retain the original filename, but prefix the version and user id:
 def filename(version, {file, scope}) do
-  "#{scope.id}_#{version}_#{file.file_name}"
+  file_name = Path.basename(file.file_name, Path.extname(file.file_name))
+  "#{scope.id}_#{version}_#{file_name}"
 end
 
 # To make the destination file the same as the version:
